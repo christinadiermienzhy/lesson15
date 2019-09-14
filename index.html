@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		
+	</title>
+</head>
+<body>
+	<script type="text/javascript">
+	/*У вас есть 2 вида бургеров - гамбургер и чизбургер. Они отличаются по составу, весу и калорийности. У чизбургера есть сыр и котлета из курицы, у гамбургера - говядина и сыра нет. Есть 2 размера md/xl
+К ним можно заказать двойную котлету и выбрать какого именно вида, двойной соус, а для чизбургера - еще и двойной сыр. Можете дополнительно добавить картофель и полить майонезом или кетчупом.
+Напишите программу, расчитывающую стоимость и калорийность гамбургера. конструктор Бургер, константы, методы для выбора опций и расчета нужных величин. Используйте дополнительные классы, по необходимости.
+*/
+		const BUNS=[
+			{
+				name:'cheeseBun',
+				size:'MD',
+				price:10,
+				calorie:150
+			},
+			{
+				name:'cheeseBun',
+				size:'XL',
+				price:20,
+				calorie:300
+			},
+			{
+				name:'humbBun',
+				size:'MD',
+				price:12,
+				calorie:170,
+			},
+			{
+				name:'humbBun',
+				size:'XL',
+				price:24,
+				calorie:340
+			},
+			{
+				name:'glutenFreeBun',
+				size:'MD',
+				price:20,
+				calorie:60
+			},
+			{
+				name:'glutenFreeBun',
+				size:'XL',
+				price:40,
+				calorie:120
+			}
+		];
+		 const CUTLET=[
+		 	{
+		 		name:'chiken',
+				size:'MD',
+		 		price:50,
+		 		calorie:200
+		 	},
+		 	{
+		 		name:'chiken',
+		 		size:'XL',
+		 		price:100,
+		 		calorie:400
+		 	},
+		 	{
+		 		name:'beef',
+		 		size:'MD',
+		 		price:60,
+		 		calorie:280
+		 	},
+		 	{
+		 		name:'beef',
+		 		size:'XL',
+		 		price:120,
+		 		calorie:500
+		 	}
+		 ]
+		 const SAUCE=[
+		 	{
+		 		name:'tomato',
+		 		price:5,
+		 		calorie:10
+		 	},
+		 	{
+		 		name:'chili',
+		 		price:7,
+		 		calorie:12
+		 	},
+		 	{
+		 		name:'garlic',
+		 		price:7,
+		 		calorie:12
+		 	},
+		 	{
+		 		name:'mayo',
+		 		price:8,
+		 		calorie:15
+		 	}
+		 ]
+		 const ADITIONALPRODUCTS=[
+		 	{
+		 		name:'cheese',
+		 		price:15,
+		 		calorie:30
+		 	},
+			{
+		 		name:'vegetables',
+		 		price:5,
+		 		calorie:5
+		 	}, 
+		 	{
+		 		name:'potatoes',
+		 		price:50,
+		 		calorie:200
+		 	}
+		 ]
+	class CreateBurger {
+		constructor(size, bun, cutlet, sauce, additional){
+			this.size = size;
+			this.burgerBun = [];
+			this.burgerBun.push(bun);
+			this.burgerCutlet = [];
+			this.burgerCutlet.push(cutlet);
+			this.burgerSauce = [];
+			this.burgerSauce.push(sauce);
+			this.burgerAdditional = [];
+			this.burgerAdditional.push(additional);
+		}
+		calculateCalories (){
+			 return Object.values(this).filter(item => ( Array.isArray(item) )).reduce ( function ( prev, current ) {
+			 	return prev += current.reduce ( function ( pr, cr ) {
+			 		return pr += cr.calorie;
+			 	}, 0)
+			 }, 0);
+		}
+		calculatePrice () {
+			 return Object.values(this).filter( item => ( Array.isArray(item) )).reduce ( function ( prev, current ) {
+			 	return prev += current.reduce ( function ( pr, cr ) {
+			 		return pr += cr.price;
+			 	}, 0)
+			 }, 0);
+		}
+		addTopping ( addedSauce ) {
+			return this.burgerSauce.push ( SAUCE.find ( item => ( item.name === addedSauce ) ) );
+		}
+	
+		addCutlet ( cutletType, size ) {
+			return this.burgerCutlet.push ( CUTLET.find ( item => ( item.name === cutletType ) && ( item.size === size ) ) );
+		}
+		addSomeProduct ( additionalProduct ) {
+			return this.burgerAdditional.push ( ADITIONALPRODUCTS.find ( item => item.name === additionalProduct ) );
+		}	
+	};
+
+	class CreateCheeseburger  extends  CreateBurger {
+		constructor(
+			size='XL', 
+			bun = BUNS.find( item => ( item.name === 'cheeseBun' ) && ( item.size === size ) ), 
+			cutlet =  CUTLET.find ( item => ( item.name === 'chiken' ) && ( item.size === size ) ) , 
+			sauce =  SAUCE.find ( item => ( item.name === 'tomato' ) ),
+			additional =ADITIONALPRODUCTS.find ( item => item.name === 'cheese' ) ){
+			super(size, bun, cutlet, sauce, additional);
+		}
+		addCheese (){
+			return this.burgerAdditional.push(ADITIONALPRODUCTS.find( item => item.name === 'cheese' ) );
+		}
+	}
+
+	class CreateHamburger extends  CreateBurger {
+		constructor(
+			size = 'XL', 
+			bun = BUNS.find ( item => ( item.name === 'humbBun' ) && ( item.size === size ) ), 
+			cutlet = CUTLET.find ( item => ( item.name === 'beef' ) && ( item.size === size ) ), 
+			sauce = SAUCE.find ( item => ( item.name === 'chili' ) ) , 
+			additional = ADITIONALPRODUCTS.find ( item => item.name === 'vegetables' )  ){
+			super(size, bun, cutlet, sauce, additional);
+		}
+	}
+	
+	 //need for test
+		const cheeseburger = new CreateCheeseburger();
+		console.log(cheeseburger);
+		cheeseburger.addTopping('mayo');
+		cheeseburger.addCutlet('beef','XL');;
+		cheeseburger.addCheese();
+		cheeseburger.addSomeProduct('potatoes');
+		console.log( 'Calories: '+ cheeseburger.calculateCalories());
+		console.log('Price: ' + cheeseburger.calculatePrice());
+		const cheeseburger1 = new CreateCheeseburger('MD');
+		cheeseburger1.addTopping('tomato');
+		console.log(cheeseburger1);
+		console.log( 'Calories: '+ cheeseburger1.calculateCalories());
+		console.log('Price: ' + cheeseburger1.calculatePrice());
+
+		const hamburger = new CreateHamburger();
+		console.log(hamburger);
+		hamburger.addCutlet('beef','MD');
+		hamburger.addSomeProduct('cheese');
+		console.log( 'Calories: '+ hamburger.calculateCalories());
+		console.log('Price: ' + hamburger.calculatePrice());
+		const hamburger1 = new CreateHamburger('MD');
+		hamburger1.addTopping('chili');
+		console.log(hamburger1);
+		console.log( 'Calories: '+ hamburger1.calculateCalories());
+		console.log('Price: ' + hamburger1.calculatePrice());
+		
+
+	</script>
+</body>
+</html>
